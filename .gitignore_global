@@ -1,0 +1,9 @@
+# Ignore the node_modules directory
+node_modules/
+client/node_modules/
+
+# The file containing environment variables 
+.env
+
+# not Finished
+aggregate/
