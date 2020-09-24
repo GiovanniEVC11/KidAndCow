@@ -2,6 +2,10 @@
   <div class="production">
     <h1>Datos de Produccion</h1>
 
+    <section> 
+      
+    </section>
+
     <section class="data" >
       <!-- v-on: = @ / v-bind: = : -->
       <button v-on:click="showForm = !showForm, id_update = '0' " class="mdc-icon-button material-icons" v-bind:key="showForm"> {{ showForm ? 'remove_circle' : 'add_circle' }} </button>
@@ -23,13 +27,13 @@
         </thead>
         <tbody>
           <tr v-for="(item, i) in items" :key="item._id"> <!-- :key to give an ID to DOM element-->
-              <th scope="row">{{ item.tub }}</th>
-              <td>{{ item.product }}</td>  
-              <td>{{ item.bars }}</td> 
-              <td>{{ item.pieces }}</td> 
-              <td>{{ item.weight }}</td> 
-              <!--Actions-->
-              <td><i class="material-icons" @click="updateItem(item)">create</i> <i class="material-icons" @click="removeItem(item, i)">delete_forever</i> </td>
+            <th scope="row">{{ item.tub }}</th>
+            <td>{{ item.product }}</td>  
+            <td>{{ item.bars }}</td> 
+            <td>{{ item.pieces }}</td> 
+            <td>{{ item.weight }}</td> 
+            <!--Actions-->
+            <td><i class="material-icons" @click="updateItem(item)">create</i> <i class="material-icons" @click="removeItem(item, i)">delete_forever</i> </td>
           </tr>            
         </tbody>
       </table>
@@ -75,23 +79,18 @@ export default {
       totalProducts: []
     };
   }, 
-  async mounted() {
-      let res = await axios.get(API);
-      this.items = res.data; //.then( (response) => { this.items = response.data , console.log(response.data) } ).catch( (err) => { console.log('API error:', err) } );
-      console.log(this.items);
-
+  mounted() {
+      this.productionTable();
+      this.totalByProduction();
       if(this.showForm == false){
           this.id_update = "0";
       }
-
-      /*  */
-      let r = await axios.get(API + "/aggregate");
-      this.totalProducts = r.data;
   },
   methods:{
     async removeItem(item, i){
       await axios.delete(API + "/" + item._id); 
       this.items.splice(i, 1);  // Remove DOM Element from table 
+      this.totalByProduction();
     },
     updateItem(item){
       this.id_update = item._id;
@@ -99,6 +98,15 @@ export default {
         this.showForm = !this.showForm;
       }
       console.log('id_update:', this.id_update);
+    },
+    async productionTable(){
+      let res = await axios.get(API);
+      this.items = res.data; //.then( (response) => { this.items = response.data , console.log(response.data) } ).catch( (err) => { console.log('API error:', err) } );
+      console.log(this.items);
+    },
+    async totalByProduction(){
+      let r = await axios.get(API + "/aggregate");
+      this.totalProducts = r.data;
     }
   }
 }
@@ -106,10 +114,12 @@ export default {
 </script>
 
 <style>
+
 .fade-enter-active, .fade-leave-active {
   transition: opacity .5s
 }
-.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+/* .fade-leave-active in <2.1.8  */
+.fade-enter, .fade-leave-to  {
   opacity: 0
 }
 </style>

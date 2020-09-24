@@ -17,7 +17,7 @@ let totalByProduct = [
                         },
                         {
                             case: { $eq: [ "$product", "Crema"] },
-                            then: {  $sum:{ $sum: [ {$multiply: [4,"$bars"]}, "$pieces" ] } }
+                            then: {  $sum:{ $sum: [ {$multiply: [6,"$bars"]}, "$pieces" ] } }
                         }
                     ],
                     default: 0

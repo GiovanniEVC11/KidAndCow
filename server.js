@@ -11,6 +11,11 @@ const bodyParser = require('body-parser');
 
 const apiRoute_pd = require('./routes/api/productionData');
 
+//Cloud
+/*
+const path = require('path');
+*/
+
 // Cors 
 // It will allow us to make AJAX request from our front-ent dev server to the backend
 app.use(cors());
@@ -34,5 +39,16 @@ mongoose
 
 app.use('/api/produccion', apiRoute_pd);
 
+// Message to probe server 
 app.get('/', (req, res) => res.send('Message to verify Server'));
 app.listen(PORT, () => console.log( ` App listening PORT: ${PORT}`) );
+
+// TO CLOUD 
+/*
+if(process.env.NODE_ENV = ''){
+    app.use(Express.static('client/dist')) // Thi it will create for itself
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'client', 'dist', 'index.html'));
+    });
+}
+*/

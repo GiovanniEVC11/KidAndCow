@@ -1,6 +1,6 @@
 <template>
 
-    <section id="FormProduction">
+    <section id="FormProduction" >
 
       <input type="text" v-model="idProp">
 
@@ -81,7 +81,7 @@ export default {
           .then( (response) => { this.data = response.data , console.log(response.data) } )
           .catch( (err) => { console.log('API error:', err) } );
     }else{
-      this.$delete(this.data, '_id')
+      this.$delete(this.data, '_id');
     }
 
   },
