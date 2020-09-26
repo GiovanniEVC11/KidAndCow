@@ -1,48 +1,61 @@
 <template>
 
-    <section id="FormProduction" >
-
-      <input type="text" v-model="idProp">
-
-      <form id="form" class="container">  
-          <div class="row row-cols-2">
-            <div class="col-6">
-              <label for="product">Producto:</label>
-              <select name="product" class="form-control" v-model="data.product">
-                  <option disabled value="Null">Seleccione un Producto</option>
-                  <option v-for="option in options" v-bind:value="option.text" :key="option.value">
-                      {{ option.text }} 
-                  </option>
-              </select>  
+    <section class="modal" id="FormProductionModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">{{ nameForm }}</h4>
+              <button type="button" class="close" data-dismiss="modal" @click="closeForm()">&times;</button>
             </div>
-          </div>
+          
+            <form id="form" class="modal-body">  
+                <!-- <input type="text" v-model="idProp"> Etiqueta de Prueba --> 
+                <div class="row row-cols-2">
+                  <div class="col-6">
+                    <label for="product">Producto:</label>
+                    <select name="product" class="form-control" v-model="data.product">
+                        <option disabled value="Null">Seleccione un Producto</option>
+                        <option v-for="option in options" v-bind:value="option.text" :key="option.value">
+                            {{ option.text }} 
+                        </option>
+                    </select>  
+                  </div>
+                </div>
 
-          <div class="row row-cols-2">
-              <div class="col-6">
-                  <label for="tub">No. Tina:</label>
-                  <input type="number" name="tub" class="form-control" :placeholder="data.tub == 0 ? 'Cantidad Entera (+)' : ''" v-model="data.tub" >
-              </div>
-              <div class="col-6">
-                  <label for="bars">Rejas:</label>
-                  <input type="number" name="bars" class="form-control" :placeholder="data.bars == 0 ? 'Cantidad Entera (+)': ''" v-model="data.bars" >
-              </div>  
-          </div>
- 
-          <div class="row row-cols-2">
-              <div class="col-6">  
-                  <label for="pieces">Piezas:</label>
-                  <input type="number" name="pieces" class="form-control" :placeholder="data.pieces == 0 ? 'Cantidad Entera (+/-)': ''" v-model="data.pieces" >
-              </div>
-              <div class="col-6">
-                  <label for="weight">Peso:</label>
-                  <input type="number" step="any" name="weight" class="form-control" :placeholder="data.weight == 0 ? 'Cantidad Decimal (Kg)': ''" v-model="data.weight">
-              </div>
-          </div>
+                <div class="row row-cols-2">
+                    <div class="col-6">
+                        <label for="tub">No. Tina:</label>
+                        <input type="number" name="tub" class="form-control" :placeholder="data.tub == 0 ? 'Cantidad Entera (+)' : ''" v-model="data.tub" >
+                    </div>
+                    <div class="col-6">
+                        <label for="bars">Rejas:</label>
+                        <input type="number" name="bars" class="form-control" :placeholder="data.bars == 0 ? 'Cantidad Entera (+)': ''" v-model="data.bars" >
+                    </div>  
+                </div>
+      
+                <div class="row row-cols-2">
+                    <div class="col-6">  
+                        <label for="pieces">Piezas:</label>
+                        <input type="number" name="pieces" class="form-control" :placeholder="data.pieces == 0 ? 'Cantidad Entera (+/-)': ''" v-model="data.pieces" >
+                    </div>
+                    <div class="col-6">
+                        <label for="weight">Peso:</label>
+                        <input type="number" step="any" name="weight" class="form-control" :placeholder="data.weight == 0 ? 'Cantidad Decimal (Kg)': ''" v-model="data.weight">
+                    </div>
+                </div>  
+            </form>
+            
+            <!-- Modal footer -->
+            <div class="modal-footer"> <!-- @ means v-on / :name_attribute means v-bind:name_attribute --> 
+                                    <!-- Validate Name Action by Id passed from parent; style bootstrap; Validate The Action to Execute with the Id passed from Parent -->
+              <input type="submit" :value="idProp == 0 ? 'Registrar': 'Modificar'" class="btn btn-primary btn-lg btn-block" data-dismiss="modal" @click="idProp == 0 ? addForm() : updateForm()">  
+              <button type="button" class="btn btn-danger" data-dismiss="modal" @click="closeForm()">Close</button>
+            </div>
 
-          <input type="submit" :value="idProp == 0 ? 'Registrar': 'Modificar'" class="btn btn-primary btn-lg btn-block" @click="idProp == 0 ? addForm() : updateForm()">    
-          <!-- @ means v-on / :name_attribute means v-bind:name_attribute --> 
-      </form>  
-
+        </div>
+      </div>
     </section>    
 
 </template>
@@ -55,7 +68,7 @@ export default {
   name: 'FormProduction',
   data() {
     return {
-      data:{
+      data: {
         _id: this.idProp,
         tub: 0 ,
         product: "Null",
@@ -71,7 +84,8 @@ export default {
     };
   },
   props: {
-    idProp: String
+    idProp: String,
+    nameForm: String
   },
   async mounted() {
     console.log("Data Form", this.data);
@@ -89,11 +103,18 @@ export default {
     async addForm(){
       console.log("addForm");
       await axios.post(API, this.data); //.then( () => { console.log(this.data) } ).catch( (err) => { console.log('API error:', err) } );
-      
+      this.sendUpDate();
     },
     async updateForm(){
       console.log("updateForm");
       await axios.put(API + "/" + this.data._id, this.data);
+      this.sendUpDate();
+    },
+    closeForm() {
+      this.$emit('closeForm'); // Event to close Modal Window
+    },
+    sendUpDate() {
+      this.$emit('setUpDate'); // Event to Update Data
     }
   }
 }
